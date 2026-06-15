@@ -37,5 +37,9 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
 # CocoIndex Code (ccc)
 /.cocoindex_code/
+
+# memory-bank
+/.memory-bank/
