@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * App.vue - Component chính, nơi mọi thứ hội tụ
- * 
+ *
  * 💡 Angular equivalent:
  * - AppComponent là root component (giống App.vue trong Vue)
  * - main.ts: createApp(App).mount('#app')
@@ -18,20 +18,20 @@ import TodoItem from '@/components/TodoItem.vue'
 
 /**
  * ref<T>() - tạo reactive variable cho primitive values
- * 
+ *
  * 💡 Angular equivalent:
  * ```typescript
  * // Angular 16+ Signals
  * newTask = signal('')
  * todos = signal<Todo[]>([])
  * darkMode = signal(false)
- * 
+ *
  * // Angular cũ
  * newTask = ''
  * todos: Todo[] = []
  * darkMode = false
  * ```
- * 
+ *
  * QUAN TRỌNG: ref() wrapper cho value, truy cập bằng .value trong script
  * Nhưng trong template, Vue tự unwrap (không cần .value)!
  */
@@ -47,27 +47,27 @@ const activeFilter = ref<FilterType>('all')
 
 /**
  * computed() - tạo giá trị derived tự động update khi dependency thay đổi
- * 
+ *
  * 💡 Angular equivalent:
  * ```typescript
  * // Angular 16+ Signals
- * activeTodosCount = computed(() => 
+ * activeTodosCount = computed(() =>
  *   todos.value.filter(t => !t.completed).length
  * )
- * 
+ *
  * // Angular cũ với rxjs
  * activeTodosCount$ = todos$.pipe(
  *   map(todos => todos.filter(t => !t.completed).length)
  * )
  * ```
  */
-const activeTodosCount = computed(() => 
+const activeTodosCount = computed(() =>
   todos.value.filter(t => !t.completed).length
 )
 
 /**
  * filteredTodos - apply filter dựa trên activeFilter
- * 
+ *
  * 💡 Angular với rxjs:
  * ```typescript
  * filteredTodos$ = combineLatest([todos$, filter$]).pipe(
@@ -102,15 +102,19 @@ const filteredTodos = computed(() => {
 const addTask = () => {
   const text = newTask.value.trim()
   if (!text) return
-  
+
   todos.value.push({
     id: Date.now(),
     text,
     completed: false,
     createdAt: Date.now(),
   })
-  
+
   newTask.value = ''
+}
+
+const xoatatca = () => {
+  todos.value = computed(() => todos.value.filter(t => !t.completed)).value
 }
 
 /**
@@ -143,7 +147,7 @@ const updateTodo = (id: number, text: string) => {
 
 /**
  * onMounted() - chạy sau khi component mount vào DOM
- * 
+ *
  * 💡 Angular equivalent: ngOnInit()
  * ```typescript
  * export class AppComponent implements OnInit {
@@ -162,12 +166,12 @@ onMounted(() => {
       console.error('Lỗi parse todos:', e)
     }
   }
-  
+
   const savedDarkMode = localStorage.getItem('darkMode')
   if (savedDarkMode) {
     darkMode.value = JSON.parse(savedDarkMode)
   }
-  
+
   if (todos.value.length === 0) {
     todos.value = [
       { id: 1, text: 'Learn React', completed: false, createdAt: Date.now() - 20000 },
@@ -179,17 +183,17 @@ onMounted(() => {
 
 /**
  * watch() - theo dõi reactive variable và thực hiện action khi thay đổi
- * 
+ *
  * 💡 Angular equivalent:
  * ```typescript
  * // Angular 16+ Signals với effect()
  * effect(() => {
  *   localStorage.setItem('todos', JSON.stringify(todos()))
  * })
- * 
+ *
  * // Angular cũ với subscription
  * constructor(private todosService: TodosService) {
- *   this.todosService.todos$.subscribe(todos => 
+ *   this.todosService.todos$.subscribe(todos =>
  *     localStorage.setItem('todos', JSON.stringify(todos))
  *   )
  * }
@@ -268,7 +272,7 @@ const setFilter = (filter: FilterType) => {
               ]"
             />
           </div>
-          
+
           <button
             @click="addTask"
             class="flex items-center rounded-[12px] px-6 py-3 text-white font-bold text-[24px] shadow-[0_2px_4px_0_rgba(0,0,0,0.25)] bg-[#4A5565]"
@@ -276,6 +280,7 @@ const setFilter = (filter: FilterType) => {
             <span class="mr-2">+</span>
             Add
           </button>
+          <button @click="xoatatca">xóa</button>
         </div>
 
         <!-- Filter Tabs -->
@@ -349,12 +354,15 @@ const setFilter = (filter: FilterType) => {
         </div>
 
         <!-- Task Counter -->
-        <div
-          v-if="todos.length > 0"
+         <div v-if="todos.length == 0">
+          không có công việc nào cả
+         </div>
+        <span
+          v-else
           class="text-[20px] text-[#6A7282] mb-4"
         >
           {{ activeTodosCount }} task{{ activeTodosCount !== 1 ? 's' : '' }} left
-        </div>
+        </span>
 
         <!-- Footer -->
         <footer class="text-[#6A7282] text-[20px] mt-8">

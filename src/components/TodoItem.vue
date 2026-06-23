@@ -74,6 +74,7 @@ const editInput = ref<HTMLInputElement | null>(null)
  */
 const toggleTodo = () => {
   if (!isEditing.value) {
+    console.log('[Child] 📤 Đang gửi sự kiện: toggleTodo', props.todo); // Debug thực tế
     emit('toggleTodo', props.todo)
   }
 }
@@ -82,6 +83,7 @@ const toggleTodo = () => {
  * Hàm xóa task
  */
 const deleteTodo = () => {
+  console.log('[Child] 📤 Đang gửi sự kiện: deleteTodo', props.todo.id); // Debug thực tế
   emit('deleteTodo', props.todo.id)
 }
 
@@ -101,6 +103,7 @@ const startEdit = () => {
  */
 const saveEdit = () => {
   if (editText.value.trim()) {
+    console.log('[Child] 📤 Đang gửi sự kiện: updateTodo', props.todo.id, editText.value); // Debug thực tế
     emit('updateTodo', props.todo.id, editText.value.trim())
     isEditing.value = false
   }
